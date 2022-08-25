@@ -1,14 +1,18 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-function TodoHeader({ addTodo }) {
-  const [input, setInput] = useState("");
+export default function TodoHeader({ onSubmit, edit }) {
+  const [input, setInput] = useState(edit ? edit.value : "");
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    addTodo({
-      id: Math.floor(Math.random() * 10000),
+    onSubmit({
+      id: Math.floor(Math.random() * 100000),
       text: input,
     });
     setInput("");
@@ -19,18 +23,17 @@ function TodoHeader({ addTodo }) {
       <div>
         <input
           id="new-task-input"
-          type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          name="text"
+          ref={inputRef}
+          onChange={(event) => setInput(event.target.value)}
           className="todo-input"
-          placeholder="What do you have planned?"
           style={{ width: "600px" }}
+          placeholder="What do you have planned?"
         />
-        <button id="new-task-submit">Add todo</button>
+        <button id="new-task-submit" onClick={handleSubmit}>
+          {edit ? "Update Todo" : "Add Todo"}
+        </button>
       </div>
     </form>
   );
 }
-
-export default TodoHeader;

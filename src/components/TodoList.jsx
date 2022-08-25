@@ -1,31 +1,42 @@
 import React, { useState } from "react";
-import TodoBody from "./TodoBody";
 import TodoHeader from "./TodoHeader";
+import TodoBody from "./TodoBody";
 
-function TodoList() {
+export default function TodoList() {
   const [todos, setTodos] = useState([]);
 
   const addTodo = (newTodo) => {
     if (!newTodo.text) {
       return;
     }
-
     const newTodos = [newTodo, ...todos];
+    setTodos(newTodos);
+  };
 
+  const removeTodo = (id) => {
+    const newTodos = [...todos].filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+  };
+
+  const updateTodo = (todoId, newValue) => {
+    if (!newValue.text) {
+      return;
+    }
+    const newTodos = todos.map((item) =>
+      item.id === todoId ? newValue : item
+    );
     setTodos(newTodos);
   };
 
   return (
     <header>
       <h1>Task List 2022</h1>
-      <TodoHeader addTodo={addTodo} />
+      <TodoHeader onSubmit={addTodo} />
       <br />
       <hr />
       <br />
       <br />
-      <TodoBody todos={todos} />
+      <TodoBody todos={todos} removeTodo={removeTodo} updateTodo={updateTodo} />
     </header>
   );
 }
-
-export default TodoList;
